@@ -12,14 +12,21 @@ import java.util.List;
 import br.edu.utfpr.dv.siacoes.model.BugReport;
 import br.edu.utfpr.dv.siacoes.model.BugReport.BugStatus;
 import br.edu.utfpr.dv.siacoes.model.Module;
+import br.edu.utfpr.dv.siacoes.model.State;
 import br.edu.utfpr.dv.siacoes.model.User;
 
 public class BugReportDAO {
 
 	private Connection conn = null;
+	private Statement stmt = null;
 
 	public Connection getConnection() throws SQLException {
 		return conn;
+	}
+
+	public Statement getStatement() throws SQLException {
+		stmt = conn.createStatement();
+		return stmt;
 	}
 	
 	public BugReport findById(int id) throws SQLException{
@@ -52,13 +59,12 @@ public class BugReportDAO {
 	}
 	
 	public List<BugReport> listAll() throws SQLException{
-		Statement stmt = null;
+
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-			
+
 			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
 					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 					"ORDER BY status, reportdate");

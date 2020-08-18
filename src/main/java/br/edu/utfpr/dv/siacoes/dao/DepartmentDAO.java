@@ -15,9 +15,15 @@ import br.edu.utfpr.dv.siacoes.model.Department;
 public class DepartmentDAO {
 
 	private Connection conn = null;
+	private Statement stmt = null;
 
 	public Connection getConnection() throws SQLException {
 		return conn;
+	}
+
+	public Statement getStatement() throws SQLException {
+		stmt = conn.createStatement();
+		return stmt;
 	}
 
 	public Department findById(int id) throws SQLException{
@@ -51,13 +57,11 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listAll(boolean onlyActive) throws SQLException{
-		Statement stmt = null;
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
+
 			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
 					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " + 
 					(onlyActive ? " WHERE department.active=1" : "") + " ORDER BY department.name");
@@ -80,13 +84,11 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listByCampus(int idCampus, boolean onlyActive) throws SQLException{
-		Statement stmt = null;
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.createStatement();
-		
+
 			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
 					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
 					"WHERE department.idCampus=" + String.valueOf(idCampus) + (onlyActive ? " AND department.active=1" : "") + " ORDER BY department.name");
