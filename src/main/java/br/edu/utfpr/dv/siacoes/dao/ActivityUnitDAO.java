@@ -16,8 +16,10 @@ public class ActivityUnitDAO {
 	private Connection conn = null;
 	private Statement stmt = null;
 	private PreparedStatement pstmt = null;
+	public ResultSet rs = null;
 
 	public Connection getConnection() throws SQLException {
+		conn = ConnectionDAO.getInstance().getConnection();
 		return conn;
 	}
 
@@ -34,10 +36,9 @@ public class ActivityUnitDAO {
 	
 	public List<ActivityUnit> listAll() throws SQLException{
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+
+			getConnection();
 
 			rs = stmt.executeQuery("SELECT * FROM activityunit ORDER BY description");
 			
@@ -60,10 +61,9 @@ public class ActivityUnitDAO {
 	
 	public ActivityUnit findById(int id) throws SQLException{
 
-		ResultSet rs = null;
-		
+
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 
 			getPreparedStatement("SELECT * FROM activityunit WHERE idActivityUnit=?", Statement.RETURN_GENERATED_KEYS);
 		
@@ -88,10 +88,9 @@ public class ActivityUnitDAO {
 	
 	public int save(int idUser, ActivityUnit unit) throws SQLException{
 		boolean insert = (unit.getIdActivityUnit() == 0);
-		ResultSet rs = null;
-		
+
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 			
 			if(insert){
 				pstmt = getPreparedStatement("INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);

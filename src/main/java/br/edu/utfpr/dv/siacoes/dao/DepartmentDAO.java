@@ -17,8 +17,10 @@ public class DepartmentDAO {
 	private Connection conn = null;
 	private Statement stmt = null;
 	private PreparedStatement pstmt = null;
+	public ResultSet rs = null;
 
 	public Connection getConnection() throws SQLException {
+		conn = ConnectionDAO.getInstance().getConnection();
 		return conn;
 	}
 
@@ -35,10 +37,8 @@ public class DepartmentDAO {
 
 	public Department findById(int id) throws SQLException{
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 			getPreparedStatement(
 				"SELECT department.*, campus.name AS campusName " +
 				"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
@@ -64,10 +64,9 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listAll(boolean onlyActive) throws SQLException{
-		ResultSet rs = null;
-		
+
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 
 			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
 					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " + 
@@ -91,10 +90,9 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listByCampus(int idCampus, boolean onlyActive) throws SQLException{
-		ResultSet rs = null;
-		
+
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 
 			rs = stmt.executeQuery("SELECT department.*, campus.name AS campusName " +
 					"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
@@ -120,10 +118,8 @@ public class DepartmentDAO {
 	public int save(int idUser, Department department) throws SQLException{
 		boolean insert = (department.getIdDepartment() == 0);
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 			
 			if(insert){
 				getPreparedStatement("INSERT INTO department(idCampus, name, logo, active, site, fullName, initials) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);

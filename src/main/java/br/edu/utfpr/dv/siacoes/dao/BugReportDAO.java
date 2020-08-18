@@ -19,8 +19,10 @@ public class BugReportDAO {
 	private Connection conn = null;
 	private Statement stmt = null;
 	private PreparedStatement pstmt = null;
+	public ResultSet rs = null;
 
 	public Connection getConnection() throws SQLException {
+		conn = ConnectionDAO.getInstance().getConnection();
 		return conn;
 	}
 
@@ -37,10 +39,8 @@ public class BugReportDAO {
 	
 	public BugReport findById(int id) throws SQLException{
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 			getPreparedStatement("SELECT bugreport.*, \"user\".name " +
 				"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
 				"WHERE idBugReport = ?", Statement.RETURN_GENERATED_KEYS);
@@ -66,10 +66,8 @@ public class BugReportDAO {
 
 	public List<BugReport> listAll() throws SQLException{
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 
 			rs = stmt.executeQuery("SELECT bugreport.*, \"user\".name " +
 					"FROM bugreport INNER JOIN \"user\" ON \"user\".idUser=bugreport.idUser " +
@@ -94,10 +92,8 @@ public class BugReportDAO {
 	public int save(BugReport bug) throws SQLException{
 		boolean insert = (bug.getIdBugReport() == 0);
 
-		ResultSet rs = null;
-		
 		try{
-			conn = ConnectionDAO.getInstance().getConnection();
+			getConnection();
 			
 			if(insert){
 				getPreparedStatement("INSERT INTO bugreport(idUser, module, title, description, reportDate, type, status, statusDate, statusDescription) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
