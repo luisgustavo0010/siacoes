@@ -12,9 +12,14 @@ import br.edu.utfpr.dv.siacoes.log.UpdateEvent;
 import br.edu.utfpr.dv.siacoes.model.ActivityUnit;
 
 public class ActivityUnitDAO {
+
+	private Connection conn = null;
+
+	public Connection getConnection() throws SQLException {
+		return conn;
+	}
 	
 	public List<ActivityUnit> listAll() throws SQLException{
-		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -42,7 +47,6 @@ public class ActivityUnitDAO {
 	}
 	
 	public ActivityUnit findById(int id) throws SQLException{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
@@ -71,7 +75,6 @@ public class ActivityUnitDAO {
 	
 	public int save(int idUser, ActivityUnit unit) throws SQLException{
 		boolean insert = (unit.getIdActivityUnit() == 0);
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		

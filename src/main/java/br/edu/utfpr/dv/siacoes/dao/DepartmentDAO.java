@@ -14,8 +14,13 @@ import br.edu.utfpr.dv.siacoes.model.Department;
 
 public class DepartmentDAO {
 
+	private Connection conn = null;
+
+	public Connection getConnection() throws SQLException {
+		return conn;
+	}
+
 	public Department findById(int id) throws SQLException{
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
@@ -46,7 +51,6 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listAll(boolean onlyActive) throws SQLException{
-		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -76,7 +80,6 @@ public class DepartmentDAO {
 	}
 	
 	public List<Department> listByCampus(int idCampus, boolean onlyActive) throws SQLException{
-		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
 		
@@ -107,7 +110,6 @@ public class DepartmentDAO {
 	
 	public int save(int idUser, Department department) throws SQLException{
 		boolean insert = (department.getIdDepartment() == 0);
-		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
