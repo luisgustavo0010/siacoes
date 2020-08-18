@@ -15,6 +15,7 @@ public class ActivityUnitDAO {
 
 	private Connection conn = null;
 	private Statement stmt = null;
+	private PreparedStatement pstmt = null;
 
 	public Connection getConnection() throws SQLException {
 		return conn;
@@ -23,6 +24,12 @@ public class ActivityUnitDAO {
 	public Statement getStatement() throws SQLException {
 		stmt = conn.createStatement();
 		return stmt;
+	}
+
+	public PreparedStatement getPreparedStatement(String SQL, int returnGeneratedKeys) throws SQLException {
+		pstmt = conn.prepareStatement(SQL);
+		return pstmt;
+
 	}
 	
 	public List<ActivityUnit> listAll() throws SQLException{
@@ -52,16 +59,17 @@ public class ActivityUnitDAO {
 	}
 	
 	public ActivityUnit findById(int id) throws SQLException{
-		PreparedStatement stmt = null;
+
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement("SELECT * FROM activityunit WHERE idActivityUnit=?");
+
+			getPreparedStatement("SELECT * FROM activityunit WHERE idActivityUnit=?", Statement.RETURN_GENERATED_KEYS);
 		
-			stmt.setInt(1, id);
+			pstmt.setInt(1, id);
 			
-			rs = stmt.executeQuery();
+			rs = pstmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -71,8 +79,8 @@ public class ActivityUnitDAO {
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
+			if((pstmt != null) && !pstmt.isClosed())
+				pstmt.close();
 			if((conn != null) && !conn.isClosed())
 				conn.close();
 		}
@@ -80,30 +88,29 @@ public class ActivityUnitDAO {
 	
 	public int save(int idUser, ActivityUnit unit) throws SQLException{
 		boolean insert = (unit.getIdActivityUnit() == 0);
-		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				pstmt = getPreparedStatement("INSERT INTO activityunit(description, fillAmount, amountDescription) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?");
+				pstmt = getPreparedStatement("UPDATE activityunit SET description=?, fillAmount=?, amountDescription=? WHERE idActivityUnit=?", Statement.RETURN_GENERATED_KEYS);
 			}
 			
-			stmt.setString(1, unit.getDescription());
-			stmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
-			stmt.setString(3, unit.getAmountDescription());
+			pstmt.setString(1, unit.getDescription());
+			pstmt.setInt(2, (unit.isFillAmount() ? 1 : 0));
+			pstmt.setString(3, unit.getAmountDescription());
 			
 			if(!insert){
-				stmt.setInt(4, unit.getIdActivityUnit());
+				pstmt.setInt(4, unit.getIdActivityUnit());
 			}
 			
-			stmt.execute();
+			pstmt.execute();
 			
 			if(insert){
-				rs = stmt.getGeneratedKeys();
+				rs = pstmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					unit.setIdActivityUnit(rs.getInt(1));
@@ -118,7 +125,7 @@ public class ActivityUnitDAO {
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
-			if((stmt != null) && !stmt.isClosed())
+			if((pstmt != null) && !pstmt.isClosed())
 				stmt.close();
 			if((conn != null) && !conn.isClosed())
 				conn.close();
