@@ -16,6 +16,7 @@ public class DepartmentDAO {
 
 	private Connection conn = null;
 	private Statement stmt = null;
+	private PreparedStatement pstmt = null;
 
 	public Connection getConnection() throws SQLException {
 		return conn;
@@ -26,20 +27,26 @@ public class DepartmentDAO {
 		return stmt;
 	}
 
+	public PreparedStatement getPreparedStatement(String SQL, int returnGeneratedKeys) throws SQLException {
+		pstmt = conn.prepareStatement(SQL);
+		return pstmt;
+
+	}
+
 	public Department findById(int id) throws SQLException{
-		PreparedStatement stmt = null;
+
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
-			stmt = conn.prepareStatement(
+			getPreparedStatement(
 				"SELECT department.*, campus.name AS campusName " +
 				"FROM department INNER JOIN campus ON campus.idCampus=department.idCampus " +
-				"WHERE idDepartment = ?");
+				"WHERE idDepartment = ?", Statement.RETURN_GENERATED_KEYS);
 		
-			stmt.setInt(1, id);
+			pstmt.setInt(1, id);
 			
-			rs = stmt.executeQuery();
+			rs = pstmt.executeQuery();
 			
 			if(rs.next()){
 				return this.loadObject(rs);
@@ -49,8 +56,8 @@ public class DepartmentDAO {
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
+			if((pstmt != null) && !pstmt.isClosed())
+				pstmt.close();
 			if((conn != null) && !conn.isClosed())
 				conn.close();
 		}
@@ -112,38 +119,38 @@ public class DepartmentDAO {
 	
 	public int save(int idUser, Department department) throws SQLException{
 		boolean insert = (department.getIdDepartment() == 0);
-		PreparedStatement stmt = null;
+
 		ResultSet rs = null;
 		
 		try{
 			conn = ConnectionDAO.getInstance().getConnection();
 			
 			if(insert){
-				stmt = conn.prepareStatement("INSERT INTO department(idCampus, name, logo, active, site, fullName, initials) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+				getPreparedStatement("INSERT INTO department(idCampus, name, logo, active, site, fullName, initials) VALUES(?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 			}else{
-				stmt = conn.prepareStatement("UPDATE department SET idCampus=?, name=?, logo=?, active=?, site=?, fullName=?, initials=? WHERE idDepartment=?");
+				getPreparedStatement("UPDATE department SET idCampus=?, name=?, logo=?, active=?, site=?, fullName=?, initials=? WHERE idDepartment=?", Statement.RETURN_GENERATED_KEYS);
 			}
 			
-			stmt.setInt(1, department.getCampus().getIdCampus());
-			stmt.setString(2, department.getName());
+			pstmt.setInt(1, department.getCampus().getIdCampus());
+			pstmt.setString(2, department.getName());
 			if(department.getLogo() == null){
-				stmt.setNull(3, Types.BINARY);
+				pstmt.setNull(3, Types.BINARY);
 			}else{
-				stmt.setBytes(3, department.getLogo());	
+				pstmt.setBytes(3, department.getLogo());
 			}
-			stmt.setInt(4, department.isActive() ? 1 : 0);
-			stmt.setString(5, department.getSite());
-			stmt.setString(6, department.getFullName());
-			stmt.setString(7, department.getInitials());
+			pstmt.setInt(4, department.isActive() ? 1 : 0);
+			pstmt.setString(5, department.getSite());
+			pstmt.setString(6, department.getFullName());
+			pstmt.setString(7, department.getInitials());
 			
 			if(!insert){
-				stmt.setInt(8, department.getIdDepartment());
+				pstmt.setInt(8, department.getIdDepartment());
 			}
 			
-			stmt.execute();
+			pstmt.execute();
 			
 			if(insert){
-				rs = stmt.getGeneratedKeys();
+				rs = pstmt.getGeneratedKeys();
 				
 				if(rs.next()){
 					department.setIdDepartment(rs.getInt(1));
@@ -158,8 +165,8 @@ public class DepartmentDAO {
 		}finally{
 			if((rs != null) && !rs.isClosed())
 				rs.close();
-			if((stmt != null) && !stmt.isClosed())
-				stmt.close();
+			if((pstmt != null) && !pstmt.isClosed())
+				pstmt.close();
 			if((conn != null) && !conn.isClosed())
 				conn.close();
 		}
