@@ -1,19 +1,26 @@
 ﻿package br.edu.utfpr.dv.siacoes.model;
 
+import jdk.nashorn.internal.objects.annotations.Setter;
+
+import javax.annotation.Generated;
 import java.io.Serializable;
 
+@NoArgsConstructor
 public class Department implements Serializable {
+
+
 	
 	private static final long serialVersionUID = 1L;
-	
-	private int idDepartment;
-	private Campus campus;
-	private String name;
-	private String fullName;
-	private transient byte[] logo;
-	private boolean active;
-	private String site;
-	private String initials;
+
+	@Id @GeneratedValue
+	@Getter private int idDepartment;
+	@Getter @Setter private Campus campus;
+	@Getter @Setter private String name;
+	@Getter @Setter private String fullName;
+	@Getter @Setter private transient byte[] logo;
+	@Getter @Setter private boolean active;
+	@Getter @Setter private String site;
+	@Getter @Setter private String initials;
 	
 	public Department(){
 		this.setIdDepartment(0);
@@ -25,52 +32,35 @@ public class Department implements Serializable {
 		this.setSite("");
 		this.setInitials("");
 	}
-	
-	public int getIdDepartment() {
-		return idDepartment;
-	}
+
 	public void setIdDepartment(int idDepartment) {
 		this.idDepartment = idDepartment;
 	}
-	public Campus getCampus() {
-		return campus;
-	}
+
 	public void setCampus(Campus campus) {
 		this.campus = campus;
 	}
-	public String getName() {
-		return name;
-	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getFullName(){
-		return fullName;
-	}
+
 	public void setFullName(String fullName){
 		this.fullName = fullName;
 	}
-	public byte[] getLogo() {
-		return logo;
-	}
+
 	public void setLogo(byte[] logo) {
 		this.logo = logo;
 	}
-	public boolean isActive() {
-		return active;
-	}
+
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public String getSite(){
-		return site;
-	}
+
 	public void setSite(String site){
 		this.site = site;
 	}
-	public String getInitials() {
-		return initials;
-	}
+
 	public void setInitials(String initials) {
 		this.initials = initials;
 	}

@@ -6,7 +6,6 @@ public class City implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private int idCity;
 	private State state;
 	private String name;
 	
