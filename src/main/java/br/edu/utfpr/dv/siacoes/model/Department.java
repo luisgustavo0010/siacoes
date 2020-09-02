@@ -5,7 +5,7 @@ import jdk.nashorn.internal.objects.annotations.Setter;
 import javax.annotation.Generated;
 import java.io.Serializable;
 
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 public class Department implements Serializable {
 
 
@@ -22,7 +22,7 @@ public class Department implements Serializable {
 	@Getter @Setter private String site;
 	@Getter @Setter private String initials;
 	
-	public Department(){
+/*	public Department(){
 		this.setIdDepartment(0);
 		this.setCampus(new Campus());
 		this.setName("");
@@ -31,9 +31,9 @@ public class Department implements Serializable {
 		this.setActive(true);
 		this.setSite("");
 		this.setInitials("");
-	}
+	} */
 
-	public void setIdDepartment(int idDepartment) {
+/*	public void setIdDepartment(int idDepartment) {
 		this.idDepartment = idDepartment;
 	}
 
@@ -63,7 +63,7 @@ public class Department implements Serializable {
 
 	public void setInitials(String initials) {
 		this.initials = initials;
-	}
+	} */
 	
 	public String toString(){
 		return this.getName();
