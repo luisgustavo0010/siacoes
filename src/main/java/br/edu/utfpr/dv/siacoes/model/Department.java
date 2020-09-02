@@ -6,7 +6,7 @@ import javax.annotation.Generated;
 import java.io.Serializable;
 
 @NoArgsConstructor @AllArgsConstructor
-@ToString(exclude={"idDepartment","logo", "active"})
+@ToString(exclude={"idDepartment","logo", "active", "Campus"})
 public class Department implements Serializable {
 
 
