@@ -6,6 +6,7 @@ import javax.annotation.Generated;
 import java.io.Serializable;
 
 @NoArgsConstructor @AllArgsConstructor
+@ToString(exclude={"idDepartment","logo", "active"})
 public class Department implements Serializable {
 
 
@@ -65,8 +66,8 @@ public class Department implements Serializable {
 		this.initials = initials;
 	} */
 	
-	public String toString(){
+/*	public String toString(){
 		return this.getName();
-	}
+	}*/
 	
 }
